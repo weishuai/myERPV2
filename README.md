@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+sakai-react NEXT
+https://github.com/primefaces/sakai-react
+https://sakai.primereact.org/
 
-Sakai is an application template for Next.js based on the popular Next.js framework with new App Router. 
+1.讲全部的文件复制到容器里
+COPY --chown=node:node . .
+2. docker pull node:18.2.0 拉取依赖包
+3. docker build -f Dockerfile -t some-name .  打包
+4. docker run -p 3000:3000 some-name    运行
+5. http://localhost:3000/auth/login     访问
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+(一)
+sakai-react:
+https://github.com/primefaces/sakai-react
+https://www.primefaces.org
+https://primereact.org
+https://github.com/kevin3274/react-native-odoo
+本套代码sakai-react官网:
+https://github.com/primefaces/sakai-react
+https://sakai.primereact.org/
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+(二)
+皮肤配置
+layout/AppConfig.tsx
+菜单配置
+layout/AppMenu.tsx
+系统CSS配置
+layout/layout.tsx
+公司LOGO
+public/layout/images
+(三)
+登录界面:
+http://localhost:3000/auth/login
+# 1.后台启动：
 
-## Integration with Existing Next.js Applications
+# cd /Volumes/mycode/myNODE20240001/丰禾MyReact框架v6.3/mycrm_api_v6.2
+# 安装模块 yarn install
+# 编译 npm run build
+# 运行 yarn start 
+# 2.前端启动
+# 编译 sudo npm run build
+# 调试 yarn dev
+# 账号和密码
+# 账号:154363268@qq.com
+# 密码:123456
 
-Only the folders related to the layout need to be moved into your project. Integration of pages involves moving the files under those folders. Make sure that the using page is defined under the related group layout.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
