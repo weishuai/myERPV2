@@ -1,0 +1,2 @@
+1.CRM数据库 :MariaDB
+2.接口调试软件：Insomnia

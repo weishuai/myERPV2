@@ -1,0 +1,16 @@
+react
+https://www.runoob.com/react/react-tutorial.html
+https://www.primefaces.org/primereact/
+http://backofficeui.sg.fot.cool/zh
+https://icons.getbootstrap.com/
+
+
+
+https://nextjs.frontendx.cn/
+https://nextjs-cn.com/docs
+https://swr.vercel.app/zh-CN
+https://github.com/isaachinman/next-i18next
+https://github.com/jquense/yup
+
+
+https://ip-api.com/

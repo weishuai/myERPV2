@@ -1,0 +1,81 @@
+production_order_number_record  date默认值
+git:
+git add package.json 
+git add .
+git commit -m "2022-02-19-S1"
+git push -u origin +master
+git push -u origin "master"
+
+
+
+(1)新建分支
+
+git branch fhcrm
+(2)切换分支
+
+git checkout master
+git checkout fhcrm
+【备注】也可以使用下面的指令直接代码上面二个步骤
+
+git checkout -b fhcrm
+(3)进行项目上传
+
+复制代码
+git add .  //将所有有改动的全部添加到要提交的本地库中
+
+git commit -m "2022-02-19-S22"
+
+git remote add origin 'https://gitee.com/fhsaas2009/sxerp202202019v3.git'
+
+git push -u origin fhcrm
+复制代码
+
+
+python typescript互转：
+https://www.npmjs.com/package/python-typing-to-typescript
+很经典的例子：
+https://segmentfault.com/q/1010000014781552
+1.Koa中间件使用之koa-router
+https://www.jb51.net/article/170332.htm
+https://www.jmjc.tech/less/124
+https://www.jianshu.com/p/f169c342b4d5
+https://wohugb.gitbooks.io/koajs/content/index.html
+2.node.js通过typeorm连接mysql/mariadb
+https://blog.csdn.net/fairyss/article/details/105863206
+3.代理设置
+https://segmentfault.com/a/1190000020424003
+https://www.wclimb.site/2020/04/04/node-proxy/
+https://blog.csdn.net/Guard777/article/details/92018251
+https://blog.csdn.net/qq_37653449/article/details/88185820
+4.nodejs 基于token的身份验证
+https://www.jb51.net/article/187240.htm
+https://blog.csdn.net/qq_37261367/article/details/81387107
+https://www.cnblogs.com/pingfan1990/p/4905065.html
+
+5.
+NodeJS搭建HTTP服务器的实现步骤
+https://www.jb51.net/article/148685.htm
+node web模块 (服务器端和客户端)
+https://blog.csdn.net/melovemingming/article/details/81256520
+NodeJs服务器开发（一）
+https://blog.csdn.net/qq_39237801/article/details/99621106
+Node.js服务端编程
+https://www.cnblogs.com/lpl666/p/12872144.html
+NodeJS-服务器端开发
+https://www.jianshu.com/p/d50609920b43
+6.文件操作
+https://www.cnblogs.com/MrZhujl/p/10164545.html
+
+7.实战 Koa + TypeScript
+https://blog.csdn.net/qq_36718999/article/details/100163058
+https://zhuanlan.zhihu.com/p/80357726
+
+8.
+
+
+http://www.axios-js.com/zh-cn/docs/
+https://www.jianshu.com/p/13cf01cdb81f
+
+https://github.com/axios/axios
+
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_sale_quotation_sale" model="res.groups">
+        <field name="name">FH专业管理组</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+    <!--
+    <record id="group_sale_quotation_sale" model="res.groups">
+        <field name="name">fhtest</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+     <record id="fh_group_user" model="res.groups">
+        <field name="name">FH菜单隐藏</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+   -->
+
+</odoo>

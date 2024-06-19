@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - Simple Data</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/myappbase/static/css/demo.css" type="text/css">
+    <link rel="stylesheet" href="/myappbase/static/css/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="/myappbase/static/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/myappbase/static/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="/myappbase/static/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="/myappbase/static/js/jquery.ztree.exedit.js"></script>
+    <SCRIPT type="text/javascript">
+
+        var setting = {
+            data: {
+                simpleData: {
+                    enable: true,
+                }
+            },
+            callback: {
+                onClick: this.onClick
+
+            }
+          };
+
+        var zNodes =[];
+
+	   function beforeRemove(treeId, treeNode) {
+		if (treeNode.children && treeNode.children.length > 0) {
+			alert('请首先删除子节点');
+			return false;
+		}
+       };
+
+        var newCount = 1;
+
+        function onClick(event, treeId, treeNode, clickFlag) {
+               var _trigger = $(this);
+                ///alert(JSON.stringify({name:treeId,treeNode: treeNode}));
+                var fhinput1=$("input[name='fhinput1']",window.parent.document);
+                fhinput1.val(treeNode.name);
+                var hidden1=$("input[name='hidden1']",window.parent.document);
+                hidden1.val(treeNode.id);
+                if(window.parent != this.window)
+                {
+                 //alert(window.parent);
+                 window.parent.showtree();
+                }
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+        };
+
+
+        function addHoverDom(treeId, treeNode) {
+
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='add node' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+            ///alert(JSON.stringify({name:treeNode.name,id:treeNode.id}));
+            var btn = $("#addBtn_"+treeNode.tId);
+
+            //if(btn.length>0)
+            //{return false;}
+            if (btn) btn.bind("click", function(){
+
+                fhp_field="fhsuperior";
+                fhtree_model= "mybase.fhtab_major";
+                $.ajax({
+                    url: "/fhweb_fhtree/add_tree/"+fhtree_model+"/"+treeNode.id+"/"+"新建文件夹"+"/0", async: false, success: function (result)
+                     {
+
+                        ///alert(JSON.stringify({name:result}));
+                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                        zTree.addNodes(treeNode, {id:result, pId:treeNode.id, name:"新建文件夹"});
+                        return false;
+                     }
+                  })
+
+
+            });
+        };
+        function removeHoverDom(treeId, treeNode) {
+
+              if($("#addBtn_"+treeNode.tId).length>0)
+              {
+               return false;
+              }
+              else
+              {
+
+
+                fhp_field="fhsuperior";
+                fhtree_model= "mybase.fhtab_major";
+                $.ajax({
+                    url: "/fhweb_fhtree/unlink_tree/"+fhtree_model+"/"+treeNode.id, async: false, success: function (result)
+                     {
+                        //showtree();
+                     }
+                  })
+                $("#addBtn_"+treeNode.tId).unbind().remove();
+              }
+        };
+       function onRename(treeId, treeNode, newNode) {
+            ///$("#addBtn_"+treeNode.tId).unbind().remove();
+            ///alert(JSON.stringify({name:newNode.name,id:newNode.id}));
+
+           fhp_field="fhsuperior";
+           fhtree_model= "mybase.fhtab_major";
+            $.ajax({
+                url: "/fhweb_fhtree/update_tree/"+fhtree_model+"/"+newNode.id+"/"+newNode.name+"/0", async: false, success: function (result)
+                 {
+                  //showtree();
+                 }
+           })
+
+        };
+        function zTreeBeforeEditName(treeId, treeNode) {
+
+            ///这里是自定义事件();
+            //alert("叶子节点被锁定，无法增加子节点");
+            //return false;
+        }
+
+        var newCount = 1;
+       	function add(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			isParent = e.data.isParent,
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (treeNode) {
+			} else {
+
+                fhtree_model= "mybase.fhtab_major";
+
+                $.ajax({
+                    url: "/fhweb_fhtree/add_tree/"+fhtree_model+"/0/"+"新建文件夹"+"/0", async: false, success: function (result)
+                     {
+                        //alert(result);
+                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                        zTree.addNodes(treeNode, {id:result, pId:0, name:"新建文件夹"});
+                        return true;
+                     }
+                  })
+			}
+
+		};
+		function edit() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+				return;
+			}
+			zTree.editName(treeNode);
+		};
+		function remove(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+				return;
+			}
+			var callbackFlag = $("#callbackTrigger").attr("checked");
+			zTree.removeNode(treeNode, callbackFlag);
+		};
+		function clearChildren(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0 || !nodes[0].isParent) {
+				alert("请先选择一个父节点");
+				return;
+			}
+			zTree.removeChildNodes(treeNode);
+		};
+
+		function showtree() {
+		    fhp_field="fhsuperior";
+            fhtree_model= "mybase.fhtab_major";
+            $.ajax({
+            url: "/fhweb_fhtree/show_tree/"+fhtree_model+"/"+fhp_field+"/0", async: false, success: function (result)
+            {
+                console.log("result：");
+                console.log(result);
+                lr = eval('(' + result + ')');
+                zNodes = lr;
+                var t = $("#treeDemo");
+                fhZTreeObj = $.fn.zTree.init(t, setting, zNodes);
+
+              }
+            });
+          }
+
+        $(document).ready(function(){
+
+             showtree();
+
+        });
+
+    </SCRIPT>
+</HEAD>
+
+<BODY>
+<div class="content_wrap">
+    <table >
+        <tr>
+            <td width="20px">
+            </td>
+            <td >
+                <div>
+                    [专业:]
+                 </div>
+                <div class="zTreeDemoBackground left"  >
+                    <ul id="treeDemo" class="ztree" ></ul>
+                </div>
+
+            </td>
+
+
+        </tr>
+    </table>
+
+</div>
+</BODY>
+</HTML>

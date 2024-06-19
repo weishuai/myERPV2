@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+		<record id="wkf_tblesson" model="workflow">
+			<field name="name">转课申请</field>
+			<field name="osv">fhtest.fht1</field>
+
+		</record>
+		<record id="act_draft" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+			<field name="flow_start">True</field>
+			<field name="name">draft</field>
+			<field name="name3">draft</field>			
+			
+			<field name="kind">function</field>
+			<field name="action">write({'Fstatus':'draft'})</field>
+		</record>
+		<record id="act_wait_prove" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+			<field name="name">wait_prove</field>
+			<field name="kind">function</field>
+			<field name="name3">draft</field>				
+			
+			<field name="action">action_funproved0()</field>
+		</record>
+		<record id="act_proved" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+
+			<field name="name">proved</field>
+			<field name="kind">function</field>
+			<field name="action">action_funproved()</field>
+			<field name="name3">draft</field>				
+			
+		</record>
+		<record id="act_proved2" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+
+			<field name="name">proved2</field>
+			<field name="kind">function</field>
+			<field name="action">action_funproved2()</field>
+			<field name="name3">draft</field>				
+			
+			
+		</record>
+		<record id="act_rejected" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+
+			<field name="name">rejected</field>
+			<field name="kind">function</field>
+			<field name="action">action_funrejected()</field>
+			<field name="name3">draft</field>				
+		</record>
+
+		<record id="act_ok" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+
+			<field name="name">ok</field>
+			<field name="kind">function</field>
+			<field name="action">action_funok()</field>
+			<field name="name3">draft</field>				
+		</record>
+
+		<record id="act_okxz" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+
+			<field name="name">okxz</field>
+			<field name="kind">function</field>
+			<field name="action">action_funxzok()</field>
+			<field name="name3">draft</field>				
+		</record>
+		<record id="act_jwpk" model="workflow.activity">
+			<field name="wkf_id" ref="wkf_tblesson"/>
+			<field name="flow_stop">True</field>
+			<field name="name">jwpk</field>
+			<field name="kind">function</field>
+			<field name="action">action_funjwpk()</field>
+			<field name="name3">draft</field>				
+		</record>
+
+
+
+
+		<record id="trans_draft_wait" model="workflow.transition">
+			<field name="act_from" ref="act_draft"/>
+			<field name="act_to" ref="act_wait_prove"/>
+			<field name="signal">action_toprovekk</field>
+		</record>
+		<record id="trans_wait_proved" model="workflow.transition">
+			<field name="act_from" ref="act_wait_prove"/>
+			<field name="act_to" ref="act_proved"/>
+			<field name="signal">action_prove</field>
+
+
+		</record>
+		<record id="trans_act_proved2" model="workflow.transition">
+			<field name="act_from" ref="act_proved"/>
+			<field name="act_to" ref="act_proved2"/>
+			<field name="signal">action_prove2</field>
+
+
+		</record>
+		<record id="trans_wait_reject" model="workflow.transition">
+			<field name="act_from" ref="act_proved2"/>
+			<field name="act_to" ref="act_rejected"/>
+			<field name="signal">action_reject</field>
+
+
+		</record>
+
+		<record id="trans_wait_ok" model="workflow.transition">
+			<field name="act_from" ref="act_rejected"/>
+			<field name="act_to" ref="act_ok"/>
+			<field name="signal">action_ok</field>
+
+
+		</record>
+			<record id="trans_wait_okxz" model="workflow.transition">
+			<field name="act_from" ref="act_ok"/>
+			<field name="act_to" ref="act_okxz"/>
+			<field name="signal">action_okxz</field>
+
+
+		</record>
+		<record id="trans_wait_jwp" model="workflow.transition">
+			<field name="act_from" ref="act_okxz"/>
+			<field name="act_to" ref="act_jwpk"/>
+			<field name="signal">action_jwpk</field>
+
+
+		</record>
+
+	</data>
+</openerp>

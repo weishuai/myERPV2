@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+
+        <record id="fhtab_user_tree_view" model="ir.ui.view">
+            <field name="name">用户表</field>
+            <field name="model">mybase.fhtab_user</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <tree string="用户表" >
+                  <field name="fhname" />
+
+
+                </tree>
+            </field>
+        </record>
+
+
+		<!-- form view -->
+		<record model="ir.ui.view" id="fhtab_user_form_view">
+			<field name="name">用户表</field>
+			<field name="model">mybase.fhtab_user</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="用户表">
+				
+					<header>
+
+					</header>
+					<sheet>
+						<group col="4">
+						
+						<field name="fhname" />
+						<field name="fhnpassword" password="True" />
+						<field name="fhmobile" />
+
+						</group>
+
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="view_fhtab_user_filter" model="ir.ui.view">
+			<field name="name">用户表</field>
+			<field name="model">mybase.fhtab_user</field>
+			<field name="arch" type="xml">
+				<search string="用户表">	
+					<field name="fhname" />
+				</search>
+			</field>
+		</record>		
+
+
+		<!-- actions -->
+
+		<record model="ir.actions.act_window" id="action_fhtab_user_form">
+			<field name="name">用户表</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">mybase.fhtab_user</field>
+
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" ref="view_fhtab_user_filter"/>			
+			<field name="view_id" ref="fhtab_user_tree_view"/>
+			<field name="domain">[] </field>
+		</record>
+
+
+</odoo>

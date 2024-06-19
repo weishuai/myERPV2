@@ -1,0 +1,258 @@
+# -*- coding: utf-8 -*-     
+from itertools import groupby
+from datetime import datetime, timedelta
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools.misc import formatLang
+
+import logging
+from odoo import http
+from odoo.http import content_disposition, dispatch_rpc, request, serialize_exception as _serialize_exception, Response
+from odoo.tools import topological_sort
+from odoo.tools.translate import _
+import json
+from odoo.tools import  ustr
+_logger = logging.getLogger(__name__)
+
+
+class WebSettingsDashboard002(http.Controller):
+    def get_responseIDB(self,data=None):
+        #body = json.dumps(data, default=ustr)
+        response = request.make_response(data, [
+            ('Content-Type', 'application/x-www-form-urlencoded'),
+            ('Access-Control-Allow-Origin','*'),
+            ('Access-Control-Max-Age', '1000'),
+        ])
+        return response
+    def get_session(self,fhuid=None):
+        lok=0
+        data = "{'fhok':'no'}"
+        response2={}
+        if (fhuid == request.session.fhuid):
+            #print("fhuidok:")
+            #print(fhuid)
+            data = "{'fhok':'ok'}"
+            lok =1
+        response2 = self.get_responseIDB(data)
+        return lok,response2
+
+    @http.route('/Account/Accountlogin',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def Accountlogin(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["mybase.fhtab_user"].sudo().search([("fhname","=",post.get("username")),("fhnpassword","=",post.get("psd"))])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+    @http.route('/Account/Accountlogin002/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def Accountlogin002(self,uid=None,**post):
+        #print("lself_list3:")
+        #print(post)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        lself = http.request.env["myaccont.fhtab_daily_practice"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+
+    @http.route('/myproduct/fhtab_examination_site/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_examination_site_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_examination_site"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+
+    @http.route('/myproduct/fhtab_question_bank01/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_question_bank01_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_question_bank01"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+
+    @http.route('/myproduct/fhtab_question_bank02/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_question_bank02_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_question_bank02"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+
+
+    @http.route('/myproduct/fhtab_subject/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_subject_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_subject"].sudo().search([])
+        lself_list= lself.sudo().read(["id","fhsubject","fhdifficulty","fhquestion_type","fhquestion_type2","fhanswer","fhsubjectlist","fhsubject_to_list","fhanalysis","fhanalysis_picture"])
+        for item in lself_list:
+            #print(item)
+            #print(item["fhanswer"])
+            pass
+            lselfanswer = http.request.env["myproduct.fhtab_subjectfhanswer"].sudo().search([("id","in",item["fhanswer"])])
+            lself_listanswer= lselfanswer.sudo().read(["id","fhname","fhanswer","fhpicture"])
+
+            lselfanswer_to_list = http.request.env["myproduct.fhtab_subjectfhanswer_to_list"].sudo().search([("id","in",item["fhsubject_to_list"])])
+            lself_listanswer_to_list= lselfanswer_to_list.sudo().read(["id","fhmajor","fhsubject","fhname","subject"])
+            #
+            item["fhanswer"]=lself_listanswer
+            item["fhsubject_to_list"] =lself_listanswer_to_list
+        data=str(lself_list)
+        data=data.replace("False","false")
+        data = data.replace("True", "true")
+        response =self.get_responseIDB(data)
+        return response
+
+    @http.route('/myproduct/fhtab_subjectfhanswer/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_subjectfhanswer_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_subjectfhanswer"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+
+    @http.route('/myproduct/fhtab_subjectfhanswer_to_list/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_fhtab_subjectfhanswer_to_list_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_subjectfhanswer_to_list"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+
+    @http.route('/Myaccont/fhtab_daily_practice_add/<string:uid>', type='http',csrf=False,  auth="public", methods=['POST'])
+    def FHtab_daily_practice_add(self,uid=None,**post):
+        #print("lself_list31:")
+        #print(post)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        fhquestions=post.get("fhquestions")
+        fhcorrect_options=post.get("fhcorrect_options")
+        fhcorrect_options_ok=post.get("fhcorrect_options_ok")
+        fhhr=post.get("fhhr")
+        lself = http.request.env["myaccont.fhtab_daily_practice"].sudo().create({
+            "fhquestions":fhquestions,
+            "fhcorrect_options":fhcorrect_options,
+            "fhcorrect_options_ok":fhcorrect_options_ok,
+            "fhhr":fhhr, })
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+
+    @http.route('/Myaccont/fhtab_daily_practice_show_by/<string:id>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhtab_daily_practice_show_by(self,id=None,uid=None,**post):
+        print("lself_list32:")
+        print(post)
+        print(id)
+        print(uid)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        lself = http.request.env["myaccont.fhtab_daily_practice"].sudo().search([("fhexamination_paper","=",id)],limit=1,order="id desc")
+        lself_list= lself.sudo().read(["id","fhcorrect_options","fhcorrect_options_ok","fhhr"])
+        data=str(lself_list)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/Myaccont/fhtab_daily_practice_show/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhtab_daily_practice_show(self,uid=None,**post):
+        print("lself_list3:")
+        print(post)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        lself = http.request.env["myaccont.fhtab_daily_practice"].sudo().search([])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+
+
+
+    @http.route('/Myaccont/myappbase_fhtab_subject_view_show/<string:fhmajor>/<string:subject>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def myappbase_fhtab_subject_view_show(self,fhmajor=None,subject=None,uid=None,**post):
+        print("lself_list3:")
+        print(post)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        fhsql1="select * fROM  myappbase_fhtab_subject_view where  parent_id = (select id fROM myappbase_fhtab_subject_view where fhname='"+subject+"' and parent_id=(SELECT id FROM myappbase_fhtab_subject_view where  fhname='"+fhmajor+"'))"
+        http.request._cr.execute(fhsql1)
+        fhsqlok = http.request._cr.fetchall()
+        http.request._cr.commit()
+        #print(fhsqlok)
+        data="["
+        for item in fhsqlok:
+            data=data+"{'id':"+str(item[0])+",'fhname':'"+str(item[1])+"','parent_id':"+str(item[2])+"},"
+        data =data[0:len(data)-1]+"]"
+        #data=str(fhsqlok)
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+
+    @http.route('/Myaccont/myappbase_fhtab_subject_view_byparent_id_show/<string:parent_id>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def myappbase_fhtab_subject_view_byparent_id_show(self,parent_id=None,uid=None,**post):
+        print("lself_list3:")
+        print(post)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        fhsql1="select * fROM myappbase_fhtab_subject_view where parent_id="+parent_id
+        http.request._cr.execute(fhsql1)
+        fhsqlok = http.request._cr.fetchall()
+        http.request._cr.commit()
+        data="["
+        for item in fhsqlok:
+            data=data+"{'id':"+str(item[0])+",'fhname':'"+str(item[1])+"','parent_id':"+str(item[2])+"},"
+        data =data[0:len(data)-1]+"]"
+        #data=str(fhsqlok)
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/myproduct/fhtab_subject/search002',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_subject_search002(self,**post):
+        print("lself_list26:")
+        print(post)
+        vals = None
+        fhmajor=post.get("fhmajor")
+        subject=post.get("subject")
+        fhsql1="select id,* fROM myappbase_fhtab_subject_view where fhname='"+subject+"' and 	 parent_id=(SELECT id FROM myappbase_fhtab_subject_view where  fhname='"+fhmajor+"')"
+        http.request._cr.execute(fhsql1)
+        fhsqlok = http.request._cr.fetchall()
+        http.request._cr.commit()
+        fhwhere="["+str(20000+fhsqlok[0][0])+"]"+subject
+        print("fhwhere")
+        print(fhwhere)
+        lself_list = http.request.env["myproduct.fhtab_subject"].sudo().fhcreate7(vals,fhwhere)
+        data=str(lself_list)
+        data=data.replace("False","false")
+        data = data.replace("True", "true")
+        response =self.get_responseIDB(data)
+        return response

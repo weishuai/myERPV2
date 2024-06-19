@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+		<menuitem name="基本数据" id="fhtab_major_menu_mainform_1"  sequence= "1"  web_icon="myapi,static/description/board.png"/>
+		<menuitem name="用户表" parent="fhtab_major_menu_mainform_1" sequence= "5" id="fhtab_user_menu_mainform_3" action="action_fhtab_user_form"/>
+
+    </data>
+</odoo>

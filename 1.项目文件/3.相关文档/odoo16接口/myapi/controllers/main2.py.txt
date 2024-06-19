@@ -1,0 +1,200 @@
+# -*- coding: utf-8 -*-
+import logging
+from odoo import http
+from odoo.http import content_disposition, dispatch_rpc, request, serialize_exception as _serialize_exception, Response
+import json
+from odoo.addons.sale.models.sale import SaleOrder
+_logger = logging.getLogger(__name__)
+
+
+class WebSettingsDashboard002(http.Controller):
+    def get_responseIDB(self,data=None):
+        response = request.make_response(data, [
+            ('Content-Type', 'application/x-www-form-urlencoded'),
+            ('Access-Control-Allow-Origin','*'),
+            ('Access-Control-Max-Age', '1000'),
+        ])
+        return response
+    def get_session(self,fhuid=None):
+        lok=0
+        data = "{'fhok':'no'}"
+        response2={}
+        if (fhuid == request.session.fhuid):
+            data = "{'fhok':'ok'}"
+            lok =1
+        response2 = self.get_responseIDB(data)
+        return lok,response2
+    @http.route('/myproduct/fhtab_subject/search',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def myproduct_fhtab_subject_search(self,**post):
+        #print("lself_list2:")
+        #print(post)
+        lself = http.request.env["myproduct.fhtab_subject"].sudo().search([])
+        lself_list= lself.sudo().read(["id","fhsubject","fhdifficulty","fhquestion_type","fhquestion_type2","fhanswer","fhsubjectlist","fhsubject_to_list","fhanalysis","fhanalysis_picture"])
+        for item in lself_list:
+            lselfanswer = http.request.env["myproduct.fhtab_subjectfhanswer"].sudo().search([("id","in",item["fhanswer"])])
+            lself_listanswer= lselfanswer.sudo().read(["id","fhname","fhanswer","fhpicture"])
+
+            lselfanswer_to_list = http.request.env["myproduct.fhtab_subjectfhanswer_to_list"].sudo().search([("id","in",item["fhsubject_to_list"])])
+            lself_listanswer_to_list= lselfanswer_to_list.sudo().read(["id","fhmajor","fhsubject","fhname","subject"])
+            #
+            item["fhanswer"]=lself_listanswer
+            item["fhsubject_to_list"] =lself_listanswer_to_list
+        data=str(lself_list)
+        data=data.replace("False","false")
+        data = data.replace("True", "true")
+        response =self.get_responseIDB(data)
+        return response
+    @http.route('/Myaccont/myappbase_fhtab_subject_view_show/<string:fhmajor>/<string:subject>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def myappbase_fhtab_subject_view_show(self,fhmajor=None,subject=None,uid=None,**post):
+        print("lself_list3:")
+        print(post)
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        fhsql1="select * fROM  myappbase_fhtab_subject_view where  parent_id = (select id fROM myappbase_fhtab_subject_view where fhname='"+subject+"' and parent_id=(SELECT id FROM myappbase_fhtab_subject_view where  fhname='"+fhmajor+"'))"
+        http.request._cr.execute(fhsql1)
+        fhsqlok = http.request._cr.fetchall()
+        http.request._cr.commit()
+        data="["
+        for item in fhsqlok:
+            data=data+"{'id':"+str(item[0])+",'fhname':'"+str(item[1])+"','parent_id':"+str(item[2])+"},"
+        data =data[0:len(data)-1]+"]"
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/Account/Accountlogin',  type='http',csrf=False,  auth="public", methods=['POST'], )
+    def Accountlogin(self,**post):
+        print("lself_list2:")
+        print(post)
+        lself = http.request.env["mybase.fhtab_user"].sudo().search([("fhname","=",post.get("username")),("fhnpassword","=",post.get("psd"))])
+        lself_list= lself.sudo().read(["id"])
+        data=str(lself_list)
+        response =self.get_responseIDB(data)
+        return response
+    @http.route('/fhmes_production_plan/fhnum_show_by/<string:id>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhmes_production_plan_fhnum(self,id=None,uid=None,**post):
+        print("lself_list111:")
+        print(post)
+        print(id)
+        print(uid)
+        if(id=="0"):
+            id=""
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        print("id")
+        print(id)
+        lself_list_ids = http.request.env["fhmes.production_plan"].sudo().search([("fhproduct.name", "like", "%" + id + "%")],limit=100, order="id desc",)
+        #lself_list = lself_list_ids.sudo().read(["id","fhdate_manufacture","fhproduct","fhprocess","fhnum","fhnum2"])
+
+        lself_list_data=[]
+        for item in lself_list_ids:
+            lself_list_data.append({"id":str(item.id),"fhdate_manufacture":str(item.fhdate_manufacture),"fhproduct":str(item.fhproduct.name),"fhprocess":str(item.fhprocess.fhname),"fhnum":str(item.fhnum),"fhnum2":str(item.fhnum2)})
+
+        data=str(lself_list_data)
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/fhmes_production_plan/fhoee_show_by/<string:id>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhmes_production_plan_fhoee(self,id=None,uid=None,**post):
+        print("lself_list111:")
+        print(post)
+        print(id)
+        print(uid)
+        if(id=="0"):
+            id=""
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        print("id")
+        print(id)
+        lself_list_ids = http.request.env["fhmes.production_plan"].sudo().search([("fhproduct.name", "like", "%" + id + "%")],limit=100, order="id desc",)
+        #lself_list = lself_list_ids.sudo().read(["id","fhdate_manufacture","fhproduct","fhprocess","fhnum","fhnum2"])
+
+        lself_list_data=[]
+        for item in lself_list_ids:
+            lself_list_data.append({"id":str(item.id),"fhdate_manufacture":str(item.fhdate_manufacture),"fhproduct":str(item.fhproduct.name),"fhprocess":str(item.fhprocess.fhname),"fhnum":str(item.fhnum),"fhnum2":str(item.fhnum2),"fhoee":str(item.fhoee)})
+
+        data=str(lself_list_data)
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/fhmes_production_plan/fhtype_show_by/<string:id>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhmes_production_plan_fhtype(self,id=None,uid=None,**post):
+        print("lself_list111:")
+        print(post)
+        print(id)
+        print(uid)
+        if(id=="0"):
+            id=""
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        print("id")
+        print(id)
+        lself_list_ids = http.request.env["fhmes.production_plan"].sudo().search([("fhproduct.name", "like", "%" + id + "%")],limit=100, order="id desc",)
+        #lself_list = lself_list_ids.sudo().read(["id","fhdate_manufacture","fhproduct","fhprocess","fhnum","fhnum2"])
+
+        lself_list_data=[]
+        for item in lself_list_ids:
+            if(item.fhtype=="0"):
+                item_fhtype="正常"
+            else:
+                item_fhtype = "异常"
+            lself_list_data.append({"id":str(item.id),"fhdate_manufacture":str(item.fhdate_manufacture),"fhproduct":str(item.fhproduct.name),"fhprocess":str(item.fhprocess.fhname),"fhnum":str(item.fhnum),"fhnum2":str(item.fhnum2),"fhtype":str(item_fhtype)})
+
+
+        data=str(lself_list_data)
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/fhmes_production_plan/fhnum4_show_by/<string:id>/<string:uid>', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhmes_production_plan_fhnum4(self,id=None,uid=None,**post):
+        print("lself_list111:")
+        print(post)
+        print(id)
+        print(uid)
+        if(id=="0"):
+            id=""
+        request.session.fhuid=uid
+        lok,response_session =self.get_session(uid)
+        print("id")
+        print(id)
+        lself_list_ids = http.request.env["fhmes.production_plan"].sudo().search([("fhproduct.name", "like", "%" + id + "%")],limit=100, order="id desc",)
+        #lself_list = lself_list_ids.sudo().read(["id","fhdate_manufacture","fhproduct","fhprocess","fhnum","fhnum2"])
+
+        lself_list_data=[]
+        for item in lself_list_ids:
+            lself_list_data.append({"id":str(item.id),"fhdate_manufacture":str(item.fhdate_manufacture),"fhproduct":str(item.fhproduct.name),"fhprocess":str(item.fhprocess.fhname),"fhnum":str(item.fhnum),"fhnum4":str(item.fhnum4),"fhoee":str(item.fhoee)})
+
+        data=str(lself_list_data)
+        print(data)
+        if(lok==0):
+            return response_session
+        else:
+            response = self.get_responseIDB(data)
+            return response
+    @http.route('/fhmes_production_plan/fhnum5_show_by', type='http',csrf=False,  auth="public", methods=['GET'])
+    def fhmes_production_plan_fhnum5(self,**post):
+        print("fhnum5_show_by:")
+        print("key1：")
+        print(post)
+        # print(post.get("key1"))
+        key2=post.get("key2")
+        #key2=b'add/0/192.168.0.105'
+        #key2=b'update/1361/192.168.0.105'
+        #key2=key2[2:len(key2) - 1]
+        #key2='add/0/192.168.0.105'
+        #key2='update/1361/192.168.0.105'
+        #print("key2:")
+        #print(key2)
+        http.request.env["fhmes.fhesop"].sudo().fh_action(key2)
+        return "ok"

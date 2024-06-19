@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - Simple Data</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/myappbase/static/css/demo.css" type="text/css">
+    <link rel="stylesheet" href="/myappbase/static/css/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="/myappbase/static/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/myappbase/static/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="/myappbase/static/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="/myappbase/static/js/jquery.ztree.exedit.js"></script>
+    <SCRIPT type="text/javascript">
+
+        var setting = {
+            view: {
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false
+            },
+            check: {
+                //enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            edit: {
+                enable: true
+            },
+            callback: {
+                 //节点被编辑之前的事件,并且根据返回值确定是否允许编辑操作
+                onRename:onRename,
+                beforeRemove:beforeRemove,
+
+           }
+        };
+
+       var zNodes =[];
+	   function beforeRemove(treeId, treeNode) {
+		if (treeNode.children && treeNode.children.length > 0) {
+			alert('请首先删除子节点');
+			return false;
+		}
+       };
+
+
+        var newCount = 1;
+        function addHoverDom(treeId, treeNode) {
+
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='add node' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+            ///alert(JSON.stringify({name:treeNode.name,id:treeNode.id}));
+            var btn = $("#addBtn_"+treeNode.tId);
+
+            //if(btn.length>0)
+            //{return false;}
+            if (btn) btn.bind("click", function(){
+                var id =100 + newCount;
+                fhp_field="fhsuperior";
+                fhtree_model= "mybase.fhtab_subject";
+                newCount=newCount+1;
+                major=hidden1=$("input[name='hidden1']").val();
+                ///alert(JSON.stringify({name:treeNode.name,id:id,pId:treeNode.id}));
+                $.ajax({
+                    url: "/fhweb_fhtree/add_tree/"+fhtree_model+"/"+treeNode.id+"/"+"新建文件夹"+"/"+major, async: false, success: function (result)
+                     {
+                        //alert(JSON.stringify({name:result}));
+                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                        zTree.addNodes(treeNode, {id:result, pId:treeNode.id, name:"新建文件夹"});
+                        return false;
+                     }
+                  })
+
+
+            });
+        };
+        function removeHoverDom(treeId, treeNode) {
+
+              if($("#addBtn_"+treeNode.tId).length>0)
+              {
+               return false;
+              }
+              else
+              {
+                //alert(JSON.stringify({name:treeNode.isParent}));
+                fhp_field="fhsuperior";
+                fhtree_model= "mybase.fhtab_subject";
+
+                $.ajax({
+                    url: "/fhweb_fhtree/unlink_tree/"+fhtree_model+"/"+treeNode.id, async: false, success: function (result)
+                     {
+                        ///showtree();
+                        ///alert(result);
+                        if(result=="no")
+                        {
+                          alert("有在使用,不能被删除");
+                          showtree();
+                        }
+                     }
+                  })
+
+                }
+
+        };
+       function onRename(treeId, treeNode, newNode) {
+            ///$("#addBtn_"+treeNode.tId).unbind().remove();
+             //alert("ok");
+            //alert(JSON.stringify({name:newNode.name,id:newNode.id,name2:treeNode.name,id2:treeNode.id}));
+
+           fhp_field="fhsuperior";
+           fhtree_model= "mybase.fhtab_subject";
+           major=hidden1=$("input[name='hidden1']").val();
+            $.ajax({
+                url: "/fhweb_fhtree/update_tree/"+fhtree_model+"/"+newNode.id+"/"+newNode.name+"/"+major, async: false, success: function (result)
+                 {
+                  //showtree();
+                 }
+           })
+
+        };
+        function zTreeBeforeEditName(treeId, treeNode) {
+
+            ///这里是自定义事件();
+            //alert("叶子节点被锁定，无法增加子节点");
+            //return false;
+        }
+
+        var newCount = 1;
+       	function add(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			isParent = e.data.isParent,
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (treeNode) {
+				//treeNode = zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+			} else {
+
+                fhp_field="fhsuperior";
+                fhtree_model= "mybase.fhtab_subject"
+                major=hidden1=$("input[name='hidden1']").val();
+                //alert(major);
+                $.ajax({
+                    url: "/fhweb_fhtree/add_tree002/"+fhtree_model+"/0/"+"新建文件夹"+"/"+major, async: false, success: function (result)
+                     {
+                        showtree();
+                     }
+                  })
+			}
+
+		};
+
+
+
+
+		function edit() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+				return;
+			}
+			zTree.editName(treeNode);
+		};
+		function remove(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+				return;
+			}
+			var callbackFlag = $("#callbackTrigger").attr("checked");
+			zTree.removeNode(treeNode, callbackFlag);
+		};
+		function clearChildren(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0 || !nodes[0].isParent) {
+				alert("请先选择一个父节点");
+				return;
+			}
+			zTree.removeChildNodes(treeNode);
+		};
+
+		function showtree() {
+		    fhp_field="fhsuperior";
+            fhtree_model= "mybase.fhtab_subject";
+            major=hidden1=$("input[name='hidden1']").val();
+            $.ajax({
+            url: "/fhweb_fhtree/show_tree/"+fhtree_model+"/"+fhp_field+"/"+major, async: false, success: function (result)
+            {
+                console.log("result：");
+                console.log(result);
+                lr = eval('(' + result + ')');
+                zNodes = lr;
+                var t = $("#treeDemo");
+                fhZTreeObj = $.fn.zTree.init(t, setting, zNodes);
+                //fhZTreeObj.expandAll(true);
+
+              }
+            });
+          }
+
+        $(document).ready(function(){
+
+             showtree();
+            ///$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            $("#addParent").bind("click", {isParent:true}, add);
+			$("#addLeaf").bind("click", {isParent:false}, add);
+			//$("#edit").bind("click", edit);
+			//$("#remove").bind("click", remove);
+			$("#clearChildren").bind("click", clearChildren);
+        });
+
+    </SCRIPT>
+    	<script type="text/javascript" src="/myappbase/static/layui/layui.js"></script>
+        <script type="text/javascript"  src="/myappbase/static/layui/ok.js"></script>
+</HEAD>
+
+<BODY>
+<div class="content_wrap">
+    <table >
+        <tr>
+            <td width="20px">
+            </td>
+            <td >
+                <div>
+                    [考题科目:]
+                 </div>
+                 <div>
+                    [所属专业:] [ <input name="fhinput1" id="fhinput1" type="text"  value="" style=""/>][<button  name="menuBtn"  class="layui-btn layui-btn-xs" test-active="test-form">选择数据</button>]
+                     <input type="hidden" name="hidden1" id="hidden1" value="" />
+                 </div>
+
+                <div>
+                     [<a id="addParent" href="#" title="增加节点" onclick="return false;">增加节点</a>]
+                    <!--
+                    [<a id="addParent" href="#" title="增加特殊父节点" onclick="return false;">增加特殊父节点</a>]
+
+                    [<a id="addParent002" href="#" title="增加常规父节点" onclick="return false;">增加父节点</a>]
+                    -->
+                 </div>
+
+
+
+                <div class="zTreeDemoBackground left"  >
+                    <ul id="treeDemo" class="ztree" ></ul>
+                </div>
+
+            </td>
+
+
+        </tr>
+    </table>
+
+</div>
+</BODY>
+</HTML>

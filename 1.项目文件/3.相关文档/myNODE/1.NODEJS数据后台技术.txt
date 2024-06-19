@@ -1,0 +1,37 @@
+Restful controller: 
+    
+https://github.com/typestack/routing-controllers/blob/master/README.md 
+Open API 3.0: 
+https://github.com/epiphone/routing-controllers-openapi#readme
+    
+Socket.io controller: 
+    
+https://github.com/typestack/socket-controllers/blob/master/README.md
+    
+Validation: 
+   
+https://github.com/typestack/class-validator/blob/master/README.md
+    
+Json <-> Object: 
+   
+https://github.com/typestack/class-transformer/blob/develop/README.md
+    
+socket.io: 
+    
+https://socket.io/docs/
+    
+IoC: 
+    
+https://github.com/typestack/typedi/blob/master/README.md
+   
+Redis:
+    
+https://github.com/luin/ioredis
+    
+MariaDB ORM:
+        
+https://typeorm.io/
+       
+https://github.com/odavid/typeorm-transactional-cls-hooked/blob/master/README.md
+       
+https://github.com/typeorm/typeorm-typedi-extensions/blob/master/README.md

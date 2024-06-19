@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+		<record model="ir.ui.view" id="fht1_tree_view">
+			<field name="name">fht1</field>
+			<field name="model">fhtest.fht1</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="fht1" >
+				  
+					<field name="fhname" />
+                  <field name="fhF1" />
+                  <field name="fhF2" />
+                  <field name="fhF3" />
+                  <field name="fhF4" />
+                  <field name="fhF5" />
+                  <field name="fhF6"  widget="many2many_tags"  />
+
+					
+				</tree>
+			</field>
+		</record>
+
+
+
+
+		<!-- form view -->
+		<record model="ir.ui.view" id="fht1_form_view">
+			<field name="name">fht1</field>
+			<field name="model">fhtest.fht1</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="fht1">
+				
+					<header>
+                    <button name="mycreate001" type="object"
+                            string="mycreate001"  class="oe_highlight"
+                    />
+                    <button name="mycreate002" type="object"
+                            string="mycreate002"  class="oe_highlight"
+                    />
+
+                    <button name="mycreate003" type="object"
+                            string="mycreate003"  class="oe_highlight"
+                    />
+                    <button name="action_draft" type="object"
+                            string="action_draft"  class="oe_highlight"
+                    />
+					</header>
+					<sheet>
+						<group col="4">
+						
+						<field name="fhname" />
+						<field name="fhF1" />
+						<field name="fhF2" />
+						<field name="fhF3" />
+						<field name="fhF4" />
+						<field name="fhF5" />
+						<field name="fhF6"  widget="many2many_tags" />
+
+						
+					
+						</group>
+						<notebook>
+						
+							<page string="fhF7">
+								<field name="fhF7" nolabel="1">
+									<tree string="fhF7" editable="bottom">
+									<field name="fhname" />
+									<field name="fhF1" />
+									<field name="fhF2" />
+									<field name="fhF3" />
+									</tree>
+								</field>
+							</page>
+
+
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="view_fht1_filter" model="ir.ui.view">
+			<field name="name">fht1</field>
+			<field name="model">fhtest.fht1</field>
+			<field name="arch" type="xml">
+				<search string="fht1">	
+					<field name="fhname" />
+                  <field name="fhF1" />
+                  <field name="fhF2" />
+                  <field name="fhF3" />
+                  <field name="fhF4" />
+                  <field name="fhF5" />
+                  <field name="fhF6" />
+
+				</search>
+			</field>
+		</record>		
+
+
+		<!-- actions -->
+
+		<record model="ir.actions.act_window" id="action_fht1_form">
+			<field name="name">fht1</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">fhtest.fht1</field>
+
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" ref="view_fht1_filter"/>			
+			<field name="view_id" ref="fht1_tree_view"/>
+			<field name="domain">[] </field>
+		</record>
+
+
+		<menuitem name="myERP测试" id="fht1_menu_mainform_1"  sequence= "1"  web_icon="sale_management,static/description/icon.png"/>
+		<menuitem name="fht1" id="fht1_menu_mainform_2" parent="fht1_menu_mainform_1"/>
+		<menuitem name="fht1" parent="fht1_menu_mainform_2" id="fht1_menu_mainform_3" action="action_fht1_form"/>
+	
+	
+	
+	
+	
+	
+	
+	
+</odoo>

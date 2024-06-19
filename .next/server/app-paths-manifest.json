@@ -1,0 +1,13 @@
+{
+  "/(main)/invoicedetails/page": "app/(main)/invoicedetails/page.js",
+  "/(main)/campaign/page": "app/(main)/campaign/page.js",
+  "/(main)/comboChart/page": "app/(main)/comboChart/page.js",
+  "/(main)/barChart/page": "app/(main)/barChart/page.js",
+  "/(main)/radarChart/page": "app/(main)/radarChart/page.js",
+  "/(main)/chart/page": "app/(main)/chart/page.js",
+  "/(main)/pieChart/page": "app/(main)/pieChart/page.js",
+  "/(main)/uikit/charts/page": "app/(main)/uikit/charts/page.js",
+  "/(main)/pages/fullcalendar2/page": "app/(main)/pages/fullcalendar2/page.js",
+  "/(main)/invoicedetails/[Id]/[Mode]/page": "app/(main)/invoicedetails/[Id]/[Mode]/page.js",
+  "/(main)/campaign/[Id]/[Mode]/page": "app/(main)/campaign/[Id]/[Mode]/page.js"
+}

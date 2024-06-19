@@ -1,0 +1,33 @@
+打开vue_shop_server文件夹的终端，输入命令：npm i pm2 -g
+查看项目列表命令：pm2 ls
+重启项目：pm2 restart myweb
+停止项目：pm2 stop myweb
+删除项目：pm2 delete myweb
+
+常见指令
+pm2 logs 显示所有进程日志
+pm2 stop all 停止所有进程
+pm2 restart all 重启所有进程
+pm2 reload all 0秒停机重载进程 (用于 NETWORKED 进程)
+pm2 stop 0 停止指定的进程
+pm2 restart 0 重启指定的进程
+pm2 startup 产生 init 脚本 保持进程活着
+pm2 web 运行健壮的 computer API endpoint
+pm2 delete 0 杀死指定的进程
+pm2 delete all 杀死全部进程
+
+
+
+启动
+yarn serve
+编译
+yarn build-demo
+文件目录
+/myweb
+/myweb/vue-plugin-hiprint
+
+
+pm2 start npm --name "my-server" -- run start -p 9800
+pm2 show my-server 
+pm2 delete all 
+http://localhost:9800
